@@ -1,0 +1,33 @@
+{
+  "name": "swooshpaybackend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node --env-file=.env dist/index.js",
+    "build": "rimraf dist && tsc",
+    "dev": "tsc-watch --noClear  --onSuccess \"node --env-file=.env dist/index.js\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@fastify/cookie": "^11.0.2",
+    "discord-oauth2": "^2.12.1",
+    "fastify": "^5.2.1",
+    "jsonwebtoken": "^9.0.2",
+    "postgres": "^3.4.5",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.7.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.21.0",
+    "@types/jsonwebtoken": "^9.0.9",
+    "@types/node": "^22.13.5",
+    "eslint": "^9.21.0",
+    "globals": "^16.0.0",
+    "tsc-watch": "^6.2.1",
+    "typescript-eslint": "^8.25.0"
+  }
+}
