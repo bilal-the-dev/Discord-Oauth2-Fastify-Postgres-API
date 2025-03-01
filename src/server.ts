@@ -1,11 +1,11 @@
 import Fastify from "fastify";
 import cookie from "@fastify/cookie";
+import fastifyCors from "@fastify/cors";
 
 import pg from "./database/pg.js";
 import "./database/tables.js";
 
 import globalDefaultErrorHandler from "./handlers/errorHandler.js";
-import fastifyCors from "@fastify/cors";
 
 const fastify = Fastify({
   // logger: true,
