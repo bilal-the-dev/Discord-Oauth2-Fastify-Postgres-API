@@ -5,9 +5,17 @@ import pg from "./database/pg.js";
 import "./database/tables.js";
 
 import globalDefaultErrorHandler from "./handlers/errorHandler.js";
+import fastifyCors from "@fastify/cors";
 
 const fastify = Fastify({
   // logger: true,
+});
+
+await fastify.register(fastifyCors, {
+  // put your options here
+  credentials: true,
+  methods: ["GET", "PUT", "POST", "PATCH", "DELETE"],
+  origin: process.env.ALLOWED_ORIGINS.split(","),
 });
 
 fastify.register(cookie);
@@ -27,11 +35,6 @@ fastify.register(import("./routes/user.js"), {
 fastify.register(import("./routes/guild.js"), {
   prefix: "/api/guilds",
 });
-
-fastify.all("*", () => ({
-  status: "error",
-  message: "Are you sure this is what you are looking for?",
-}));
 
 fastify.setErrorHandler(globalDefaultErrorHandler);
 

@@ -5,6 +5,7 @@ declare global {
     interface ProcessEnv {
       NODE_ENV: string;
       PORT?: string;
+      ALLOWED_ORIGINS: string;
 
       JWT_SECRET: string;
       JWT_EXPIRES_IN: StringValue;
