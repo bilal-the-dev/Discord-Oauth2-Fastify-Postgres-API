@@ -11,5 +11,5 @@ export const sendDiscordUserGuilds = async (req: FastifyRequest) => {
 
   const manipulatedGuilds = manipulateUserGuilds(guilds);
 
-  return { status: "success", data: manipulatedGuilds };
+  return manipulatedGuilds;
 };

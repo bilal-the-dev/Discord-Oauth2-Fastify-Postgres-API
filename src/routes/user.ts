@@ -1,12 +1,16 @@
 import { FastifyInstance } from "fastify";
 
 import { sendDiscordUserObject } from "../handlers/userHandler.js";
-import { protect } from "../handlers/authHandler.js";
+import customFastify from "../utils/customFastfiy.js";
 
 async function routes(fastify: FastifyInstance) {
-  fastify.addHook("preHandler", protect);
-
-  fastify.get("/@me", sendDiscordUserObject);
+  customFastify({
+    fastify,
+    path: "/@me",
+    fieldName: "user",
+    type: "get",
+    handler: sendDiscordUserObject,
+  });
 }
 
 export default routes;

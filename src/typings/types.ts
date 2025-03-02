@@ -10,3 +10,5 @@ export interface User {
 export interface discordAuthRequestQuery {
   Querystring: { code?: string };
 }
+
+export type httpMethods = "get" | "post" | "put" | "patch" | "delete";
