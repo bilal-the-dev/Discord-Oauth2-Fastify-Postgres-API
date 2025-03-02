@@ -3,5 +3,6 @@ declare module "discord-oauth2" {
     isAdmin?: boolean;
     isBotPresent?: boolean;
     members?: number;
+    inviteUrl?: string;
   }
 }
