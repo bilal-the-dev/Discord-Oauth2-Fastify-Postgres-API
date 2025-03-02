@@ -1,6 +1,7 @@
 import { FastifyRequest } from "fastify";
 
 import { fetchUserGuildsOauth } from "../utils/discordOauth.js";
+import { manipulateUserGuilds } from "../bot/clientFunctions.js";
 
 export const sendDiscordUserGuilds = async (req: FastifyRequest) => {
   const guilds = await fetchUserGuildsOauth(
@@ -8,12 +9,7 @@ export const sendDiscordUserGuilds = async (req: FastifyRequest) => {
     req.discordUser.id
   );
 
-  const ADMIN_BIT = 0x0000000000000008;
+  const manipulatedGuilds = manipulateUserGuilds(guilds);
 
-  guilds.forEach((g) => {
-    if (g.permissions && (Number(g.permissions) & ADMIN_BIT) == ADMIN_BIT) {
-      g.isAdmin = true;
-    }
-  });
-  return { status: "success", data: guilds };
+  return { status: "success", data: manipulatedGuilds };
 };

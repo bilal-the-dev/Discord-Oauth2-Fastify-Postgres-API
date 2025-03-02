@@ -3,9 +3,11 @@ import cookie from "@fastify/cookie";
 import fastifyCors from "@fastify/cors";
 
 import pg from "./database/pg.js";
-import "./database/tables.js";
-
 import globalDefaultErrorHandler from "./handlers/errorHandler.js";
+
+// Load Some Stuff
+import "./database/tables.js";
+import "./bot/client.js";
 
 const fastify = Fastify({
   // logger: true,

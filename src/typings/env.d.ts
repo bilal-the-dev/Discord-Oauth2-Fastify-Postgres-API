@@ -10,6 +10,8 @@ declare global {
       JWT_SECRET: string;
       JWT_EXPIRES_IN: StringValue;
       JWT_COOKIE_EXPIRES_IN_DAYS: string;
+
+      DISCORD_BOT_TOKEN: string;
       CLIENT_ID: string;
       CLIENT_SECRET: string;
       REDIRECT_URI: string;

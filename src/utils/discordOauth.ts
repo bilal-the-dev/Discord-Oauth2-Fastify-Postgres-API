@@ -7,13 +7,8 @@ import { User } from "../typings/types.js";
 
 const { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI } = process.env;
 
-let discordAPICache = new Map<
-  string,
-  {
-    discordOauthUser: DiscordOauth2.User;
-    discordUserGuilds?: Array<DiscordOauth2.PartialGuild>;
-  }
->();
+let discordOauth2Cache = new Map<string, DiscordOauth2.User>();
+let discordGuildsCache = new Map<string, Array<DiscordOauth2.PartialGuild>>();
 
 const oauth2Options = {
   clientId: CLIENT_ID,
@@ -58,10 +53,10 @@ export const fetchUserGuildsOauth = async (
   accessToken: string,
   userId: string
 ): Promise<DiscordOauth2.PartialGuild[]> => {
-  const apiResult = discordAPICache.get(userId)!;
+  let guildCache = discordGuildsCache.get(userId);
 
   // Checking with apiResult?.discordUserGuilds because this code runs after every request when Oauth user is fetched so it can API result can be never be null
-  if (!apiResult.discordUserGuilds) {
+  if (!guildCache) {
     console.log("Getting User Guilds from API");
 
     const res = await oauth
@@ -70,12 +65,13 @@ export const fetchUserGuildsOauth = async (
 
     if (res instanceof DiscordOauth2.DiscordHTTPError)
       throw new AppError("Could not get user guilds unauthorized", 401);
-    apiResult.discordUserGuilds = res;
 
-    discordAPICache.set(userId, { ...apiResult });
+    guildCache = res;
+
+    discordGuildsCache.set(userId, [...guildCache]);
   }
 
-  return apiResult.discordUserGuilds;
+  return guildCache;
 };
 
 export const isLoggedIn = async (
@@ -100,33 +96,33 @@ export const isLoggedIn = async (
   const [currentUser]: [User?] =
     await fastifyInstance.pg`SELECT * from users where userId = ${decoded.userId}`;
 
-  console.log(currentUser);
-
   if (!currentUser)
     throw new AppError(
       "The user belonging to this token does no longer exist.",
       401
     );
 
-  let apiResult = discordAPICache.get(currentUser.userid);
+  let oauthCache = discordOauth2Cache.get(currentUser.userid);
 
   // Not checking with apiResult?.discordOauthUser because this code runs before every request and it is 100% sure if cache was deleted the api result is null
-  if (!apiResult) {
+  if (!oauthCache) {
     console.log("Getting Oauth user from API");
 
-    apiResult = {
-      discordOauthUser: await getDiscordUserFromToken(currentUser.accesstoken),
-    };
+    oauthCache = await getDiscordUserFromToken(currentUser.accesstoken);
 
-    discordAPICache.set(currentUser.userid, {
-      ...apiResult,
+    discordOauth2Cache.set(currentUser.userid, {
+      ...oauthCache,
     });
   }
 
   req.dbUser = currentUser;
-  req.discordUser = apiResult.discordOauthUser;
+  req.discordUser = oauthCache;
 };
 
 setInterval(() => {
-  discordAPICache = new Map();
+  discordOauth2Cache = new Map();
+}, 1000 * 60 * 15);
+
+setInterval(() => {
+  discordGuildsCache = new Map();
 }, 1000 * 60 * 1);
