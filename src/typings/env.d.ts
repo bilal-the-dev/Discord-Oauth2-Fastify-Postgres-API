@@ -14,6 +14,7 @@ declare global {
       DISCORD_BOT_TOKEN: string;
       CLIENT_ID: string;
       CLIENT_SECRET: string;
+      BOT_INVITE_URL: string;
       REDIRECT_URI: string;
     }
   }
